@@ -54,7 +54,7 @@ function Index() {
       <section className="grid grid-cols-2 border-b border-foreground md:grid-cols-4 md:divide-x md:divide-line">
         <div className="pr-4 md:pr-5"><Stat value={r?.total ?? "—"} label="Atendimentos" /></div>
         <div className="pl-4 md:px-5"><Stat value={r?.demandas ?? "—"} label="Demandas" /></div>
-        <div className="pr-4 md:px-5"><Stat value={r?.encaminhados ?? "—"} label="Encaminhados" /></div>
+        <div className="pr-4 md:px-5"><Stat value={r?.triados ?? "—"} label="Triados" /></div>
         <div className="pl-4 md:pl-5"><Stat value={r?.urgentes ?? "—"} label="Atenção imediata" /></div>
       </section>
 

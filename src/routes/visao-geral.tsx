@@ -25,75 +25,80 @@ function VisaoGeral() {
   const demandas = data ? porDemanda(data) : [];
   const status = data ? porStatus(data) : null;
   const maxDemanda = demandas[0]?.[1] ?? 1;
+  const totalStatus = status ? STATUS_FLOW.reduce((n, s) => n + status[s], 0) : 0;
 
   return (
-    <Page className="pb-16">
-      <PageTitle
-        title="Visão geral"
-        sub="Leitura sintética da ação a partir dos registros armazenados neste dispositivo."
-      />
+    <Page className="pb-14">
+      <PageTitle title="Visão geral" sub="Leitura sintética da ação a partir dos registros disponíveis neste dispositivo." />
 
-      <section className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 md:mt-12 md:grid-cols-4">
-        <Stat value={r?.total ?? "—"} label="Atendimentos" />
-        <Stat value={r?.demandas ?? "—"} label="Demandas" />
-        <Stat value={r?.encaminhados ?? "—"} label="Encaminhados" />
-        <Stat value={r?.urgentes ?? "—"} label="Atenção imediata" />
+      <section className="grid grid-cols-2 border-b border-foreground md:grid-cols-4 md:divide-x md:divide-line">
+        <div className="pr-4 md:pr-5"><Stat value={r?.total ?? "—"} label="Atendimentos" /></div>
+        <div className="pl-4 md:px-5"><Stat value={r?.demandas ?? "—"} label="Demandas" /></div>
+        <div className="pr-4 md:px-5"><Stat value={r?.triados ?? "—"} label="Triados" /></div>
+        <div className="pl-4 md:pl-5"><Stat value={r?.urgentes ?? "—"} label="Atenção imediata" /></div>
       </section>
 
-      <section className="mt-14 md:mt-20">
-        <div className="flex items-baseline justify-between border-b border-foreground pb-4">
-          <h2 className="text-lg font-medium tracking-[-0.015em]">Demandas identificadas</h2>
-          <span className="label-xs text-subtle">Ocorrências</span>
+      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
+        <div className="py-7 md:border-r md:pr-5">
+          <p className="label-xs text-subtle">Fluxo</p>
+          <h2 className="mt-3 text-xl font-medium tracking-[-0.025em]">Estado dos atendimentos</h2>
+          <p className="mt-3 max-w-xs text-xs leading-relaxed text-muted">Três estados apenas: entrada, triagem e conclusão.</p>
         </div>
 
-        {data === null ? (
-          <div className="space-y-px pt-px">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-14 animate-pulse bg-surface" />
-            ))}
-          </div>
-        ) : demandas.length === 0 ? (
-          <p className="py-10 text-sm text-muted">Ainda não há demandas registradas.</p>
-        ) : (
-          <div>
-            {demandas.map(([id, total]) => (
-              <div key={id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-6 border-b border-line py-4">
+        <div className="grid grid-cols-3 border-t border-line md:border-t-0">
+          {STATUS_FLOW.map((s) => {
+            const count = status?.[s] ?? 0;
+            const share = totalStatus ? Math.round((count / totalStatus) * 100) : 0;
+            return (
+              <div key={s} className="flex min-h-40 flex-col justify-between border-r border-line p-4 last:border-r-0 md:min-h-48 md:p-5">
                 <div>
-                  <div className="text-sm text-foreground">{DEMANDA_MAP[id].label}</div>
-                  <div className="mt-2 h-px bg-line">
-                    <div
-                      className="h-px bg-foreground"
-                      style={{ width: `${Math.max(8, (total / maxDemanda) * 100)}%` }}
-                    />
-                  </div>
+                  <div className="num-display text-[2.6rem] leading-none md:text-[3.5rem]">{status ? String(count).padStart(2, "0") : "—"}</div>
+                  <div className="label-xs mt-3 text-muted">{STATUS_LABEL[s]}</div>
                 </div>
-                <span className="num-display text-lg">{String(total).padStart(2, "0")}</span>
+                <div>
+                  <div className="h-1.5 bg-accent-soft">
+                    <div className="h-1.5 bg-accent transition-[width] duration-300" style={{ width: `${share}%` }} />
+                  </div>
+                  <p className="label-xs mt-2 text-subtle">{share}%</p>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="mt-14 md:mt-20">
-        <div className="border-b border-foreground pb-4">
-          <h2 className="text-lg font-medium tracking-[-0.015em]">Andamento</h2>
-        </div>
-        <div className="grid grid-cols-2 gap-px border-x border-b border-line bg-line md:grid-cols-4">
-          {STATUS_FLOW.map((s) => (
-            <div key={s} className="bg-surface p-5">
-              <div className="num-display text-[2rem] leading-none">
-                {status ? String(status[s]).padStart(2, "0") : "—"}
-              </div>
-              <div className="label-xs mt-3 text-muted">{STATUS_LABEL[s]}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
-      <section className="mt-14 border-t border-line pt-5 md:mt-20">
-        <p className="max-w-xl text-xs leading-relaxed text-subtle">
-          Os indicadores refletem apenas os registros disponíveis localmente neste navegador. O protótipo não sincroniza dados entre dispositivos.
+      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
+        <div className="py-7 md:border-r md:pr-5">
+          <p className="label-xs text-subtle">Incidência</p>
+          <h2 className="mt-3 text-xl font-medium tracking-[-0.025em]">Demandas identificadas</h2>
+          <p className="mt-3 max-w-xs text-xs leading-relaxed text-muted">Leitura proporcional das ocorrências registradas.</p>
+        </div>
+
+        <div className="border-t border-line py-1 md:border-t-0 md:pl-5">
+          {data === null ? (
+            <div className="py-12 text-sm text-subtle">Carregando leitura…</div>
+          ) : demandas.length === 0 ? (
+            <p className="py-12 text-sm text-muted">Ainda não há demandas registradas.</p>
+          ) : (
+            demandas.map(([id, total], index) => (
+              <div key={id} className="grid grid-cols-[30px_minmax(90px,0.7fr)_minmax(120px,1.3fr)_34px] items-center gap-4 border-b border-line py-4 last:border-b-0">
+                <span className="label-xs text-subtle">{String(index + 1).padStart(2, "0")}</span>
+                <span className="text-sm text-foreground">{DEMANDA_MAP[id].label}</span>
+                <div className="h-2 bg-accent-soft">
+                  <div className="h-2 bg-accent" style={{ width: `${Math.max(8, (total / maxDemanda) * 100)}%` }} />
+                </div>
+                <span className="num-display text-right text-lg">{String(total).padStart(2, "0")}</span>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="grid border-b border-line py-5 md:grid-cols-[1fr_auto] md:items-center">
+        <p className="max-w-xl text-[0.7rem] leading-relaxed text-subtle">
+          Os indicadores refletem apenas os registros disponíveis localmente neste navegador. Não há sincronização entre dispositivos.
         </p>
+        <p className="label-xs mt-3 text-subtle md:mt-0">Leitura local</p>
       </section>
     </Page>
   );

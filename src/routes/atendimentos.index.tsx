@@ -5,7 +5,7 @@ import { Input, PrioridadeTag, StatusTag } from "@/components/kit";
 import { DEMANDA_MAP } from "@/lib/demandas";
 import { formatarData, ordenar, useAtendimentos } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import type { Atendimento } from "@/lib/types";
+import type { Atendimento, Status } from "@/lib/types";
 
 export const Route = createFileRoute("/atendimentos/")({
   head: () => ({
@@ -22,38 +22,16 @@ export const Route = createFileRoute("/atendimentos/")({
   component: Atendimentos,
 });
 
-const FILTROS = [
-  { id: "todos", label: "Todos" },
-  { id: "novos", label: "Novos" },
-  { id: "atencao", label: "Atenção" },
-  { id: "urgentes", label: "Urgentes" },
-  { id: "encaminhados", label: "Encaminhados" },
-  { id: "concluidos", label: "Concluídos" },
-] as const;
-
-type FiltroId = (typeof FILTROS)[number]["id"];
-
-function aplica(a: Atendimento, f: FiltroId) {
-  switch (f) {
-    case "novos":
-      return a.status === "novo";
-    case "atencao":
-      return a.prioridade === "atencao";
-    case "urgentes":
-      return a.prioridade === "urgente";
-    case "encaminhados":
-      return a.status === "encaminhado";
-    case "concluidos":
-      return a.status === "concluido";
-    default:
-      return true;
-  }
-}
+const CATEGORIAS: { id: Status; label: string }[] = [
+  { id: "novo", label: "Novos" },
+  { id: "triado", label: "Triados" },
+  { id: "concluido", label: "Concluídos" },
+];
 
 function Atendimentos() {
   const data = useAtendimentos();
   const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState<FiltroId>("todos");
+  const [categoria, setCategoria] = useState<Status>("novo");
 
   const lista = useMemo(() => {
     if (!data) return [];
@@ -61,108 +39,110 @@ function Atendimentos() {
     return ordenar(
       data.filter(
         (a) =>
-          aplica(a, filtro) &&
+          a.status === categoria &&
           (!q ||
             a.nome.toLowerCase().includes(q) ||
             a.nacionalidade.toLowerCase().includes(q) ||
             a.responsavel.toLowerCase().includes(q)),
       ),
     );
-  }, [data, busca, filtro]);
+  }, [data, busca, categoria]);
+
+  const contagem = (status: Status) => data?.filter((a) => a.status === status).length ?? 0;
 
   return (
-    <Page className="pb-16">
-      <PageTitle title="Atendimentos" sub={data ? `${data.length} registros armazenados neste dispositivo.` : undefined} />
+    <Page className="pb-14">
+      <PageTitle title="Atendimentos" sub="Fila local organizada em três estados operacionais." />
 
-      <div className="mt-6">
+      <section className="grid grid-cols-3 border-b border-foreground">
+        {CATEGORIAS.map((c) => {
+          const active = categoria === c.id;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCategoria(c.id)}
+              className={cn(
+                "grid min-h-20 border-r border-line px-3 py-3 text-left transition-colors duration-150 last:border-r-0 md:min-h-24 md:px-5",
+                active ? "bg-foreground text-surface" : "hover:bg-accent-soft",
+              )}
+            >
+              <span className={cn("num-display text-3xl leading-none md:text-4xl", !active && "text-foreground")}>{String(contagem(c.id)).padStart(2, "0")}</span>
+              <span className={cn("label-xs self-end", active ? "text-surface/70" : "text-muted")}>{c.label}</span>
+            </button>
+          );
+        })}
+      </section>
+
+      <section className="grid border-b border-line py-4 md:grid-cols-[1.55fr_0.45fr] md:items-center">
         <Input
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-          placeholder="Buscar atendimento..."
+          placeholder="Buscar por nome, nacionalidade ou responsável"
           aria-label="Buscar atendimento"
         />
-        <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 md:mx-0 md:flex-wrap md:px-0">
-          {FILTROS.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setFiltro(f.id)}
-              className={cn(
-                "label-xs shrink-0 border px-3 py-2.5 transition-colors duration-150",
-                filtro === f.id
-                  ? "border-foreground bg-foreground text-surface"
-                  : "border-line text-muted hover:border-line-strong hover:text-foreground",
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
+        <p className="label-xs mt-3 text-subtle md:mt-0 md:border-l md:border-line md:pl-5">
+          {String(lista.length).padStart(2, "0")} em exibição
+        </p>
+      </section>
 
       {data === null ? (
-        <div className="mt-10 space-y-px">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-28 animate-pulse bg-surface" />
-          ))}
-        </div>
-      ) : data.length === 0 ? (
-        <Vazio
-          titulo="Ainda não há atendimentos"
-          texto="Os registros realizados durante a ação aparecerão aqui."
-          cta
-        />
+        <div className="border-b border-line py-12 text-sm text-subtle">Carregando registros…</div>
       ) : lista.length === 0 ? (
-        <Vazio
-          titulo="Nenhum atendimento encontrado"
-          texto="Tente outro nome ou remova os filtros ativos."
-        />
+        <Vazio categoria={CATEGORIAS.find((c) => c.id === categoria)?.label ?? "categoria"} busca={busca} />
       ) : (
-        <ul className="mt-10 border-t border-foreground">
-          {lista.map((a) => (
+        <ul className="border-b border-foreground">
+          {lista.map((a, index) => (
             <li key={a.id}>
               <Link
                 to="/atendimentos/$id"
                 params={{ id: a.id }}
-                className="block border-b border-line py-5 transition-colors duration-150 hover:bg-surface"
+                className="group grid border-b border-line py-5 transition-colors duration-150 last:border-b-0 hover:bg-accent-soft md:grid-cols-[44px_minmax(0,1.35fr)_minmax(180px,0.65fr)_auto] md:items-center md:gap-5"
               >
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4">
-                  <h2 className="truncate text-[1.0625rem] font-medium tracking-[-0.01em]">{a.nome}</h2>
-                  <StatusTag status={a.status} />
+                <span className="label-xs hidden text-subtle md:block">{String(index + 1).padStart(2, "0")}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between gap-4 md:block">
+                    <h2 className="truncate text-[1.05rem] font-medium tracking-[-0.015em] md:text-[1.18rem]">{a.nome}</h2>
+                    <span className="md:hidden"><StatusTag status={a.status} /></span>
+                  </div>
+                  <p className="mt-1.5 text-xs text-muted">{a.nacionalidade} · {a.idioma}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-foreground/80 md:hidden">{a.demandas.map((d) => DEMANDA_MAP[d].label).join(" · ")}</p>
                 </div>
-                <p className="mt-1.5 text-sm text-muted">
-                  {a.nacionalidade} · {a.idioma}
-                </p>
-                <p className="mt-3 text-sm text-foreground/80">
-                  {a.demandas.map((d) => DEMANDA_MAP[d].label).join(" · ")}
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <div className="mt-4 hidden border-l border-line pl-5 md:block">
+                  <p className="label-xs text-subtle">Demandas</p>
+                  <p className="mt-2 text-xs leading-relaxed text-muted">{a.demandas.map((d) => DEMANDA_MAP[d].label).join(" · ")}</p>
+                </div>
+                <div className="mt-4 flex items-center gap-4 md:mt-0 md:flex-col md:items-end md:gap-2">
+                  <span className="hidden md:block"><StatusTag status={a.status} /></span>
                   <PrioridadeTag prioridade={a.prioridade} />
-                  <span className="label-xs text-subtle">{a.responsavel}</span>
-                  <span className="label-xs ml-auto text-subtle">{formatarData(a.criadoEm)}</span>
+                  <span className="label-xs ml-auto text-subtle md:ml-0">{formatarData(a.criadoEm)}</span>
                 </div>
               </Link>
             </li>
           ))}
         </ul>
       )}
+
+      <div className="flex justify-between border-b border-line py-5">
+        <p className="text-[0.7rem] leading-relaxed text-subtle">Dados armazenados somente neste navegador.</p>
+        <Link to="/novo" className="label-xs text-accent transition-colors hover:text-foreground">+ Novo atendimento</Link>
+      </div>
     </Page>
   );
 }
 
-function Vazio({ titulo, texto, cta }: { titulo: string; texto: string; cta?: boolean }) {
+function Vazio({ categoria, busca }: { categoria: string; busca: string }) {
   return (
-    <div className="mt-10 border-t border-foreground py-16 text-center">
-      <p className="label-xs">{titulo}</p>
-      <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted">{texto}</p>
-      {cta && (
-        <Link
-          to="/novo"
-          className="mt-8 inline-flex min-h-12 items-center rounded-md bg-accent px-5 text-sm font-medium text-accent-foreground transition-colors duration-200 hover:bg-foreground"
-        >
-          + Novo atendimento
-        </Link>
-      )}
+    <div className="grid border-b border-foreground py-12 md:grid-cols-[1.55fr_0.45fr]">
+      <div>
+        <p className="text-lg font-medium tracking-[-0.02em]">Nenhum registro em {categoria.toLowerCase()}</p>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">
+          {busca ? "A busca atual não encontrou correspondências nesta categoria." : "Os atendimentos aparecerão aqui conforme avançarem no fluxo."}
+        </p>
+      </div>
+      <div className="mt-6 md:mt-0 md:border-l md:border-line md:pl-5">
+        <Link to="/novo" className="label-xs text-accent transition-colors hover:text-foreground">+ Novo atendimento →</Link>
+      </div>
     </div>
   );
 }

@@ -26,10 +26,10 @@ function AtendimentoDetalhe() {
 
   if (data === null) {
     return (
-      <Page className="pb-16">
+      <Page className="pb-14">
         <div className="pt-10 md:pt-14">
-          <div className="h-10 w-56 animate-pulse bg-surface" />
-          <div className="mt-8 h-36 animate-pulse bg-surface" />
+          <div className="h-10 w-56 animate-pulse bg-accent-soft" />
+          <div className="mt-8 h-36 animate-pulse bg-accent-soft" />
         </div>
       </Page>
     );
@@ -37,12 +37,9 @@ function AtendimentoDetalhe() {
 
   if (!atendimento) {
     return (
-      <Page className="pb-16">
+      <Page className="pb-14">
         <PageTitle title="Atendimento não encontrado" sub="Este registro não está disponível neste dispositivo." />
-        <Link
-          to="/atendimentos"
-          className="label-xs mt-8 inline-flex border border-line-strong px-4 py-3 transition-colors hover:border-foreground"
-        >
+        <Link to="/atendimentos" className="label-xs mt-8 inline-flex border border-line-strong px-4 py-3 transition-colors hover:border-foreground">
           ← Voltar aos atendimentos
         </Link>
       </Page>
@@ -52,29 +49,31 @@ function AtendimentoDetalhe() {
   const mudarStatus = (status: Status) => atualizarAtendimento(atendimento.id, { status });
 
   return (
-    <Page className="pb-16">
+    <Page className="pb-14">
       <div className="pt-10 md:pt-14">
-        <Link to="/atendimentos" className="label-xs text-subtle transition-colors hover:text-foreground">
-          ← Atendimentos
-        </Link>
-        <div className="mt-5 border-b border-foreground pb-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <StatusTag status={atendimento.status} />
-            <PrioridadeTag prioridade={atendimento.prioridade} />
-            {atendimento.demo ? <span className="label-xs text-subtle">Demonstração</span> : null}
+        <Link to="/atendimentos" className="label-xs text-subtle transition-colors hover:text-foreground">← Atendimentos</Link>
+        <div className="mt-5 grid border-y border-foreground py-6 md:grid-cols-[1.55fr_0.45fr] md:items-end">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <StatusTag status={atendimento.status} />
+              <PrioridadeTag prioridade={atendimento.prioridade} />
+              {atendimento.demo ? <span className="label-xs text-subtle">Demonstração</span> : null}
+            </div>
+            <h1 className="mt-5 text-[2.35rem] leading-[0.9] font-semibold tracking-[-0.045em] md:text-[3.5rem]">{atendimento.nome}</h1>
+            <p className="mt-3 text-sm text-muted">{atendimento.nacionalidade} · {atendimento.idioma}</p>
           </div>
-          <h1 className="mt-4 text-[2rem] leading-none font-semibold tracking-[-0.025em] md:text-[2.75rem]">
-            {atendimento.nome}
-          </h1>
-          <p className="mt-3 text-sm text-muted">
-            {atendimento.nacionalidade} · {atendimento.idioma} · {formatarData(atendimento.criadoEm)}
-          </p>
+          <div className="mt-5 border-t border-line pt-4 md:mt-0 md:border-t-0 md:border-l md:pl-5">
+            <p className="label-xs text-subtle">Registro</p>
+            <p className="mt-3 text-sm">{formatarData(atendimento.criadoEm)}</p>
+          </div>
         </div>
       </div>
 
-      <section className="mt-10">
-        <h2 className="label-xs text-muted">Identificação</h2>
-        <dl className="mt-4 border-t border-line">
+      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
+        <div className="py-7 md:border-r md:pr-5">
+          <p className="label-xs text-subtle">Identificação</p>
+        </div>
+        <dl className="md:pl-5">
           <Row label="Situação documental" value={atendimento.situacaoDocumental} />
           <Row label="Contato" value={atendimento.contato || "Não informado"} />
           <Row label="Acolhimento" value={atendimento.acolhedor || "Não informado"} />
@@ -82,18 +81,17 @@ function AtendimentoDetalhe() {
         </dl>
       </section>
 
-      <section className="mt-12">
-        <div className="flex items-baseline justify-between border-b border-foreground pb-4">
-          <h2 className="text-lg font-medium tracking-[-0.015em]">Demandas</h2>
-          <span className="label-xs text-subtle">{atendimento.demandas.length}</span>
+      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
+        <div className="py-7 md:border-r md:pr-5">
+          <p className="label-xs text-subtle">Demandas</p>
+          <p className="num-display mt-3 text-3xl">{String(atendimento.demandas.length).padStart(2, "0")}</p>
         </div>
-
-        <div>
+        <div className="md:pl-5">
           {atendimento.demandas.map((idDemanda) => {
             const demanda = DEMANDA_MAP[idDemanda];
             return (
-              <div key={idDemanda} className="border-b border-line py-5">
-                <h3 className="text-[0.9375rem] font-medium">{demanda.label}</h3>
+              <div key={idDemanda} className="border-b border-line py-5 last:border-b-0">
+                <h3 className="text-[0.95rem] font-medium">{demanda.label}</h3>
                 <dl className="mt-4 space-y-3">
                   {demanda.campos.map((campo) => {
                     const resposta = atendimento.respostas[campoKey(idDemanda, campo.key)];
@@ -113,39 +111,37 @@ function AtendimentoDetalhe() {
       </section>
 
       {atendimento.observacoes ? (
-        <section className="mt-12">
-          <h2 className="label-xs text-muted">Observações</h2>
-          <p className="mt-4 border-t border-line pt-4 text-sm leading-relaxed text-foreground">
-            {atendimento.observacoes}
-          </p>
+        <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
+          <div className="py-7 md:border-r md:pr-5"><p className="label-xs text-subtle">Observações</p></div>
+          <p className="py-7 text-sm leading-relaxed text-foreground md:pl-5">{atendimento.observacoes}</p>
         </section>
       ) : null}
 
-      <section className="mt-12">
-        <div className="border-b border-foreground pb-4">
-          <h2 className="text-lg font-medium tracking-[-0.015em]">Andamento</h2>
-          <p className="mt-2 text-xs leading-relaxed text-subtle">Atualize o estágio do atendimento neste dispositivo.</p>
-        </div>
-        <div className="mt-5 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line md:grid-cols-4">
-          {STATUS_FLOW.map((status) => {
-            const active = atendimento.status === status;
-            return (
-              <button
-                key={status}
-                type="button"
-                onClick={() => mudarStatus(status)}
-                aria-pressed={active}
-                className={cn(
-                  "min-h-14 px-3 text-sm transition-colors duration-150",
-                  active
-                    ? "bg-foreground font-medium text-surface"
-                    : "bg-surface text-muted hover:bg-background hover:text-foreground",
-                )}
-              >
-                {STATUS_LABEL[status]}
-              </button>
-            );
-          })}
+      <section className="border-b border-foreground py-7">
+        <div className="grid md:grid-cols-[0.42fr_1.58fr]">
+          <div className="pb-5 md:border-r md:pr-5 md:pb-0">
+            <p className="label-xs text-subtle">Andamento</p>
+            <p className="mt-3 text-xs leading-relaxed text-muted">Atualize o estado do atendimento neste dispositivo.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-px border border-line bg-line md:ml-5">
+            {STATUS_FLOW.map((status) => {
+              const active = atendimento.status === status;
+              return (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => mudarStatus(status)}
+                  aria-pressed={active}
+                  className={cn(
+                    "min-h-16 px-3 text-sm transition-colors duration-150",
+                    active ? "bg-foreground font-medium text-surface" : "bg-background text-muted hover:bg-accent-soft hover:text-foreground",
+                  )}
+                >
+                  {STATUS_LABEL[status]}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
     </Page>
@@ -154,7 +150,7 @@ function AtendimentoDetalhe() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-5 border-b border-line py-4 text-sm">
+    <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-5 border-b border-line py-4 text-sm last:border-b-0">
       <dt className="text-subtle">{label}</dt>
       <dd className="text-right leading-relaxed text-foreground">{value}</dd>
     </div>

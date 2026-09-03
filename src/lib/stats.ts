@@ -2,9 +2,9 @@ import type { Atendimento, DemandaId, Status } from "./types";
 
 export function resumo(list: Atendimento[]) {
   const demandas = list.reduce((n, a) => n + a.demandas.length, 0);
-  const encaminhados = list.filter((a) => a.status === "encaminhado").length;
+  const triados = list.filter((a) => a.status === "triado").length;
   const urgentes = list.filter((a) => a.prioridade === "urgente").length;
-  return { total: list.length, demandas, encaminhados, urgentes };
+  return { total: list.length, demandas, triados, urgentes };
 }
 
 export function porDemanda(list: Atendimento[]) {
@@ -19,6 +19,6 @@ export function porStatus(list: Atendimento[]) {
       acc[a.status] += 1;
       return acc;
     },
-    { novo: 0, triado: 0, encaminhado: 0, concluido: 0 } as Record<Status, number>,
+    { novo: 0, triado: 0, concluido: 0 } as Record<Status, number>,
   );
 }

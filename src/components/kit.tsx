@@ -16,11 +16,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-[background-color,color,border-color,transform] duration-200 active:translate-y-px disabled:pointer-events-none disabled:opacity-40",
-        size === "lg" ? "h-13 px-6 text-[0.9375rem]" : "h-11 px-4",
-        variant === "primary" && "bg-accent text-accent-foreground hover:bg-foreground",
-        variant === "outline" && "border border-line-strong bg-transparent text-foreground hover:border-foreground hover:bg-surface",
-        variant === "ghost" && "text-muted hover:text-foreground",
+        "inline-flex items-center justify-center gap-2 border text-sm font-medium transition-[background-color,color,border-color,transform] duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-35",
+        size === "lg" ? "h-13 px-6 text-[0.9rem]" : "h-11 px-4",
+        variant === "primary" && "border-accent bg-accent text-accent-foreground hover:border-foreground hover:bg-foreground",
+        variant === "outline" && "border-line-strong bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-surface",
+        variant === "ghost" && "border-transparent text-muted hover:text-foreground",
         className,
       )}
       {...props}
@@ -28,20 +28,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   );
 });
 
-export function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: ReactNode;
-}) {
+export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
-    <label className="block">
+    <label className="block border-t border-line pt-3">
       <span className="label-xs text-muted">{label}</span>
-      {hint ? <span className="mt-1 block text-xs text-subtle">{hint}</span> : null}
-      <div className="mt-2">{children}</div>
+      {hint ? <span className="mt-1 block text-[0.7rem] text-subtle">{hint}</span> : null}
+      <div className="mt-3">{children}</div>
     </label>
   );
 }
@@ -52,7 +44,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
       <input
         ref={ref}
         className={cn(
-          "h-12 w-full rounded-md border border-line bg-surface px-3 text-[0.9375rem] text-foreground placeholder:text-subtle transition-colors duration-150 hover:border-line-strong focus:border-accent focus:outline-none",
+          "h-12 w-full border-0 border-b border-line-strong bg-transparent px-0 text-[0.95rem] text-foreground placeholder:text-subtle transition-colors duration-150 hover:border-foreground focus:border-accent focus:outline-none",
           className,
         )}
         {...props}
@@ -65,7 +57,7 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
   return (
     <textarea
       className={cn(
-        "min-h-24 w-full resize-none rounded-md border border-line bg-surface p-3 text-[0.9375rem] leading-relaxed text-foreground placeholder:text-subtle transition-colors duration-150 hover:border-line-strong focus:border-accent focus:outline-none",
+        "min-h-28 w-full resize-none border-0 border-b border-line-strong bg-transparent px-0 py-3 text-[0.95rem] leading-relaxed text-foreground placeholder:text-subtle transition-colors duration-150 hover:border-foreground focus:border-accent focus:outline-none",
         className,
       )}
       {...props}
@@ -85,7 +77,7 @@ export function ChoiceGroup({
   columns?: boolean;
 }) {
   return (
-    <div className={cn("grid gap-px overflow-hidden rounded-md border border-line bg-line", columns ? "grid-cols-1" : "grid-cols-[repeat(auto-fit,minmax(96px,1fr))]")}>
+    <div className={cn("grid gap-px border border-line bg-line", columns ? "grid-cols-1" : "grid-cols-[repeat(auto-fit,minmax(96px,1fr))]")}>
       {options.map((o) => {
         const active = value === o;
         return (
@@ -97,8 +89,8 @@ export function ChoiceGroup({
             className={cn(
               "min-h-11 px-3 py-3 text-sm transition-colors duration-150",
               active
-                ? "bg-accent font-medium text-accent-foreground"
-                : "bg-surface text-muted hover:bg-background hover:text-foreground",
+                ? "bg-foreground font-medium text-surface"
+                : "bg-background text-muted hover:bg-accent-soft hover:text-foreground",
             )}
           >
             {o}
@@ -127,29 +119,21 @@ export function StatusTag({ status }: { status: Status }) {
 }
 
 export function PrioridadeTag({ prioridade }: { prioridade: Prioridade }) {
-  if (prioridade === "normal") {
-    return <span className="label-xs text-subtle">Normal</span>;
-  }
+  if (prioridade === "normal") return <span className="label-xs text-subtle">Normal</span>;
   return (
-    <span
-      className={cn(
-        "label-xs",
-        prioridade === "urgente" ? "text-urgent" : "text-foreground",
-      )}
-    >
-      {prioridade === "urgente" ? "• " : ""}
-      {PRIORIDADE_LABEL[prioridade]}
+    <span className={cn("label-xs", prioridade === "urgente" ? "text-urgent" : "text-foreground")}>
+      {prioridade === "urgente" ? "● " : ""}{PRIORIDADE_LABEL[prioridade]}
     </span>
   );
 }
 
 export function Stat({ value, label }: { value: number | string; label: string }) {
   return (
-    <div className="border-t border-foreground pt-3">
-      <div className="num-display text-[2.25rem] leading-none">
+    <div className="min-w-0 border-t border-foreground py-4 md:py-5">
+      <div className="num-display text-[2.65rem] leading-[0.85] md:text-[3.5rem]">
         {typeof value === "number" ? String(value).padStart(2, "0") : value}
       </div>
-      <div className="label-xs mt-2 text-muted">{label}</div>
+      <div className="label-xs mt-3 text-muted">{label}</div>
     </div>
   );
 }

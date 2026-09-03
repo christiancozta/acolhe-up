@@ -7,12 +7,23 @@ const KEY = "kelvin.acolhimento.v1";
 let cache: Atendimento[] | null = null;
 const listeners = new Set<() => void>();
 
+function normalize(list: unknown[]): Atendimento[] {
+  return list.map((item) => {
+    const a = item as Atendimento & { status?: string };
+    return {
+      ...a,
+      status: a.status === "encaminhado" ? "triado" : a.status,
+    } as Atendimento;
+  });
+}
+
 function read(): Atendimento[] {
   if (cache) return cache;
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      cache = JSON.parse(raw) as Atendimento[];
+      cache = normalize(JSON.parse(raw) as unknown[]);
+      localStorage.setItem(KEY, JSON.stringify(cache));
     } else {
       cache = SEED;
       localStorage.setItem(KEY, JSON.stringify(SEED));

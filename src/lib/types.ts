@@ -11,7 +11,7 @@ export type DemandaId =
   | "outro";
 
 export type Prioridade = "normal" | "atencao" | "urgente";
-export type Status = "novo" | "triado" | "encaminhado" | "concluido";
+export type Status = "novo" | "triado" | "concluido";
 
 export interface Atendimento {
   id: string;
@@ -31,12 +31,11 @@ export interface Atendimento {
   demo?: boolean;
 }
 
-export const STATUS_FLOW: Status[] = ["novo", "triado", "encaminhado", "concluido"];
+export const STATUS_FLOW: Status[] = ["novo", "triado", "concluido"];
 
 export const STATUS_LABEL: Record<Status, string> = {
   novo: "Novo",
   triado: "Triado",
-  encaminhado: "Encaminhado",
   concluido: "Concluído",
 };
 

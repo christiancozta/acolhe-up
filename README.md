@@ -135,18 +135,13 @@ A interface orienta a equipe a registrar somente informações necessárias ao a
 
 O GitHub Pages publica diretamente o `index.html`. Não é necessário instalar dependências nem executar build.
 
-O arquivo operacional da interface é:
+O repositório operacional fica reduzido a quatro peças:
 
 ```text
 index.html
-```
-
-A camada de gravação é:
-
-```text
 Code.gs
+README.md
+.github/workflows/deploy-pages.yml
 ```
 
-## Estado do código anterior
-
-A estrutura React/TanStack existente permanece no repositório temporariamente apenas como histórico de transição. Ela não participa da nova publicação estática e pode ser removida após validação do novo fluxo.
+Para alterações cotidianas da interface, o único arquivo necessário é `index.html`.

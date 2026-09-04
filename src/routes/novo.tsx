@@ -86,8 +86,9 @@ function NovoAtendimento() {
 
   const setResposta = (k: string, v: string) => setRespostas((p) => ({ ...p, [k]: v }));
 
-  function registrar() {
+  async function registrar() {
     setSalvando(true);
+
     const atendimento: Atendimento = {
       id: novoId(),
       nome: nome.trim(),
@@ -104,11 +105,27 @@ function NovoAtendimento() {
       status: "novo",
       criadoEm: new Date().toISOString(),
     };
-    window.setTimeout(() => {
+
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify(atendimento),
+      });
+
       criarAtendimento(atendimento);
       setSalvo(atendimento);
+    } catch (erro) {
+      console.error("Erro ao enviar atendimento:", erro);
+
+      criarAtendimento(atendimento);
+      setSalvo(atendimento);
+    } finally {
       setSalvando(false);
-    }, 320);
+    }
   }
 
   if (salvo) return <Confirmacao atendimento={salvo} />;

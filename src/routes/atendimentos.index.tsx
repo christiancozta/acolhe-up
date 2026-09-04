@@ -74,14 +74,14 @@ function Atendimentos() {
         })}
       </section>
 
-      <section className="grid border-b border-line py-4 md:grid-cols-[1.55fr_0.45fr] md:items-center">
+      <section className="grid border-b border-line py-4 md:grid-cols-[1.55fr_0.45fr] md:items-stretch">
         <Input
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
           placeholder="Buscar por nome, nacionalidade ou responsável"
           aria-label="Buscar atendimento"
         />
-        <p className="label-xs mt-3 text-subtle md:mt-0 md:border-l md:border-line md:pl-5">
+        <p className="label-xs mt-3 text-subtle md:mt-0 md:flex md:items-center md:self-stretch md:border-l md:border-line md:pl-5">
           {String(lista.length).padStart(2, "0")} em exibição
         </p>
       </section>
@@ -112,7 +112,7 @@ function Atendimentos() {
                   <p className="label-xs text-subtle">Demandas</p>
                   <p className="mt-2 text-xs leading-relaxed text-muted">{a.demandas.map((d) => DEMANDA_MAP[d].label).join(" · ")}</p>
                 </div>
-                <div className="mt-4 flex items-center gap-4 md:mt-0 md:flex-col md:items-end md:gap-2">
+                <div className="mt-4 flex items-center gap-4 md:mt-0 md:w-[9.5rem] md:flex-col md:items-end md:gap-2.5">
                   <span className="hidden md:block"><StatusTag status={a.status} /></span>
                   <PrioridadeTag prioridade={a.prioridade} />
                   <span className="label-xs ml-auto text-subtle md:ml-0">{formatarData(a.criadoEm)}</span>

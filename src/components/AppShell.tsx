@@ -77,9 +77,9 @@ export function Page({ children, className }: { children: ReactNode; className?:
 
 export function PageTitle({ title, sub }: { title: string; sub?: string }) {
   return (
-    <div className="grid border-b border-foreground pt-9 pb-5 md:grid-cols-[minmax(0,1.55fr)_minmax(240px,0.45fr)] md:items-end md:pt-14 md:pb-6">
-      <h1 className="text-[2.1rem] leading-[0.92] font-semibold tracking-[-0.045em] md:text-[3.25rem]">{title}</h1>
-      {sub ? <p className="mt-4 max-w-md text-[0.78rem] leading-relaxed text-muted md:mt-0 md:border-l md:border-line md:pl-5">{sub}</p> : null}
+    <div className="grid border-b border-foreground pt-9 pb-5 md:grid-cols-[minmax(0,1.55fr)_minmax(240px,0.45fr)] md:items-stretch md:pt-14 md:pb-6">
+      <h1 className="self-end text-[2.1rem] leading-[0.92] font-semibold tracking-[-0.045em] md:text-[3.25rem]">{title}</h1>
+      {sub ? <p className="mt-4 flex max-w-md items-end text-[0.78rem] leading-relaxed text-muted md:mt-0 md:border-l md:border-line md:pl-5">{sub}</p> : null}
     </div>
   );
 }

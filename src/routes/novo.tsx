@@ -37,12 +37,12 @@ function Steps({ step }: { step: number }) {
         <div
           key={n}
           className={cn(
-            "flex min-h-14 items-center justify-between border-r border-line px-3 last:border-r-0 md:px-4",
-            n === step ? "bg-foreground text-surface" : n < step ? "bg-accent-soft text-accent" : "text-subtle",
+            "flex min-h-14 items-center justify-between gap-2 border-r border-line px-3 last:border-r-0 md:rule-lead md:justify-normal md:gap-0 md:px-4",
+            n === step ? "bg-foreground text-surface md:rule-lead-invert" : n < step ? "bg-accent-soft text-accent" : "text-subtle",
           )}
         >
           <span className="label-xs">0{n}</span>
-          <span className="text-[0.62rem] uppercase tracking-[0.08em] md:text-[0.68rem]">
+          <span className="min-w-0 truncate text-[0.62rem] uppercase tracking-[0.08em] md:text-[0.68rem]">
             {n === 1 ? "Identificação" : n === 2 ? "Demandas" : "Acompanhamento"}
           </span>
         </div>
@@ -53,9 +53,9 @@ function Steps({ step }: { step: number }) {
 
 function StepTitle({ children, note }: { children: string; note: string }) {
   return (
-    <div className="grid border-b border-foreground py-7 md:grid-cols-[1.55fr_0.45fr] md:items-end md:py-9">
-      <h1 className="text-[2rem] leading-[0.92] font-semibold tracking-[-0.045em] md:text-[3rem]">{children}</h1>
-      <p className="label-xs mt-4 text-subtle md:mt-0 md:border-l md:border-line md:pl-5">{note}</p>
+    <div className="grid border-b border-foreground py-7 md:grid-cols-[1.55fr_0.45fr] md:items-stretch md:py-9">
+      <h1 className="self-end text-[2rem] leading-[0.92] font-semibold tracking-[-0.045em] md:text-[3rem]">{children}</h1>
+      <p className="label-xs mt-4 flex items-end text-subtle md:mt-0 md:border-l md:border-line md:pl-5">{note}</p>
     </div>
   );
 }

@@ -16,7 +16,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 border text-sm font-medium transition-[background-color,color,border-color,transform] duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-35",
+        "inline-flex items-center justify-center gap-2 border text-sm font-medium transition-[background-color,color,border-color,transform] duration-150 active:translate-y-px disabled:pointer-events-none disabled:border-line disabled:bg-transparent disabled:text-subtle",
         size === "lg" ? "h-13 px-6 text-[0.9rem]" : "h-11 px-4",
         variant === "primary" && "border-accent bg-accent text-accent-foreground hover:border-foreground hover:bg-foreground",
         variant === "outline" && "border-line-strong bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-surface",
@@ -30,7 +30,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
-    <label className="block border-t border-line pt-3">
+    <label className="block">
       <span className="label-xs text-muted">{label}</span>
       {hint ? <span className="mt-1 block text-[0.7rem] text-subtle">{hint}</span> : null}
       <div className="mt-3">{children}</div>
@@ -77,7 +77,7 @@ export function ChoiceGroup({
   columns?: boolean;
 }) {
   return (
-    <div className={cn("grid gap-px border border-line bg-line", columns ? "grid-cols-1" : "grid-cols-[repeat(auto-fit,minmax(96px,1fr))]")}>
+    <div className={cn("grid gap-px border border-line bg-line", columns ? "grid-cols-1 sm:grid-cols-2 sm:[&>*:last-child:nth-child(odd)]:col-span-2" : "grid-cols-[repeat(auto-fit,minmax(96px,1fr))]")}>
       {options.map((o) => {
         const active = value === o;
         return (
@@ -87,7 +87,7 @@ export function ChoiceGroup({
             onClick={() => onChange(o)}
             aria-pressed={active}
             className={cn(
-              "min-h-11 px-3 py-3 text-sm transition-colors duration-150",
+              "min-h-11 px-4 py-3 text-left text-sm transition-colors duration-150",
               active
                 ? "bg-foreground font-medium text-surface"
                 : "bg-background text-muted hover:bg-accent-soft hover:text-foreground",
@@ -129,7 +129,7 @@ export function PrioridadeTag({ prioridade }: { prioridade: Prioridade }) {
 
 export function Stat({ value, label }: { value: number | string; label: string }) {
   return (
-    <div className="min-w-0 border-t border-foreground py-4 md:py-5">
+    <div className="min-w-0 py-4 md:py-5">
       <div className="num-display text-[2.65rem] leading-[0.85] md:text-[3.5rem]">
         {typeof value === "number" ? String(value).padStart(2, "0") : value}
       </div>

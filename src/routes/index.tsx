@@ -51,7 +51,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="grid grid-cols-2 border-b border-foreground md:grid-cols-4 md:divide-x md:divide-line">
+      <section className="grid grid-cols-2 border-y border-foreground md:grid-cols-4 md:divide-x md:divide-line">
         <div className="pr-4 md:pr-5"><Stat value={r?.total ?? "—"} label="Atendimentos" /></div>
         <div className="pl-4 md:px-5"><Stat value={r?.demandas ?? "—"} label="Demandas" /></div>
         <div className="pr-4 md:px-5"><Stat value={r?.triados ?? "—"} label="Triados" /></div>
@@ -61,7 +61,7 @@ function Index() {
       <section className="grid border-b border-foreground md:grid-cols-[1.55fr_0.45fr]">
         <Link
           to="/novo"
-          className="group flex min-h-24 items-center justify-between bg-accent px-5 text-accent-foreground transition-colors duration-150 hover:bg-foreground md:min-h-28 md:px-7"
+          className="group rule-lead rule-lead-invert flex min-h-24 items-center bg-accent px-5 text-accent-foreground transition-colors duration-150 hover:bg-foreground md:min-h-28 md:px-7"
         >
           <div>
             <span className="label-xs opacity-70">Entrada</span>
@@ -91,8 +91,8 @@ function Index() {
             <div className="py-8 text-sm text-subtle">Ainda não há dados suficientes para compor a leitura.</div>
           ) : (
             demandas.map(([id, total]) => (
-              <div key={id} className="grid grid-cols-[minmax(100px,0.7fr)_minmax(120px,1.3fr)_32px] items-center gap-4 border-b border-line py-3 last:border-b-0">
-                <span className="text-xs text-muted">{DEMANDA_MAP[id].label}</span>
+              <div key={id} className="grid grid-cols-[minmax(0,1fr)_minmax(90px,1.6fr)_32px] items-center gap-4 border-b border-line py-3 last:border-b-0 md:grid-cols-[9.5rem_minmax(120px,1fr)_32px]">
+                <span className="truncate text-xs text-muted">{DEMANDA_MAP[id].label}</span>
                 <div className="h-2 bg-accent-soft">
                   <div className="h-2 bg-accent transition-[width] duration-300" style={{ width: `${Math.max(10, (total / maxDemanda) * 100)}%` }} />
                 </div>

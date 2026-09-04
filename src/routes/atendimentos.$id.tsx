@@ -97,9 +97,9 @@ function AtendimentoDetalhe() {
                     const resposta = atendimento.respostas[campoKey(idDemanda, campo.key)];
                     if (!resposta) return null;
                     return (
-                      <div key={campo.key} className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-5 text-sm">
-                        <dt className="text-subtle">{campo.label}</dt>
-                        <dd className="text-right leading-relaxed text-foreground">{resposta}</dd>
+                      <div key={campo.key} className="rule-lead flex items-baseline text-sm">
+                        <dt className="shrink-0 text-subtle">{campo.label}</dt>
+                        <dd className="min-w-0 text-right leading-relaxed text-foreground">{resposta}</dd>
                       </div>
                     );
                   })}
@@ -150,9 +150,9 @@ function AtendimentoDetalhe() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-5 border-b border-line py-4 text-sm last:border-b-0">
-      <dt className="text-subtle">{label}</dt>
-      <dd className="text-right leading-relaxed text-foreground">{value}</dd>
+    <div className="rule-lead flex items-baseline border-b border-line py-4 text-sm last:border-b-0">
+      <dt className="shrink-0 text-subtle">{label}</dt>
+      <dd className="min-w-0 text-right leading-relaxed text-foreground">{value}</dd>
     </div>
   );
 }

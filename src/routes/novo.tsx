@@ -13,6 +13,9 @@ import {
   type Prioridade,
 } from "@/lib/types";
 
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxW_q87ozBfOcLYsulMw0ZQh01wuBpDipJiuD5zftqu7gwYzqtHCgbv9Wfc8qt50llw/exec";
+
 export const Route = createFileRoute("/novo")({
   head: () => ({
     meta: [

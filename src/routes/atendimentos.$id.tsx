@@ -9,10 +9,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/atendimentos/$id")({
   head: () => ({
     meta: [
-      { title: "Atendimento · Acolhimento" },
+      { title: "Atendimento | Acolhe Up" },
       {
         name: "description",
-        content: "Detalhes e acompanhamento de um atendimento registrado durante a ação de acolhimento.",
+        content:
+          "Detalhes e acompanhamento de um atendimento registrado durante a ação de acolhimento.",
       },
     ],
   }),
@@ -38,8 +39,14 @@ function AtendimentoDetalhe() {
   if (!atendimento) {
     return (
       <Page className="pb-14">
-        <PageTitle title="Atendimento não encontrado" sub="Este registro não está disponível neste dispositivo." />
-        <Link to="/atendimentos" className="label-xs mt-8 inline-flex border border-line-strong px-4 py-3 transition-colors hover:border-foreground">
+        <PageTitle
+          title="Atendimento não encontrado"
+          sub="Este registro não está disponível neste dispositivo."
+        />
+        <Link
+          to="/atendimentos"
+          className="label-xs mt-8 inline-flex border border-line-strong px-4 py-3 transition-colors hover:border-foreground"
+        >
           ← Voltar aos atendimentos
         </Link>
       </Page>
@@ -51,16 +58,25 @@ function AtendimentoDetalhe() {
   return (
     <Page className="pb-14">
       <div className="pt-10 md:pt-14">
-        <Link to="/atendimentos" className="label-xs text-subtle transition-colors hover:text-foreground">← Atendimentos</Link>
-        <div className="mt-5 grid border-y border-foreground py-6 md:grid-cols-[1.55fr_0.45fr] md:items-end">
+        <Link
+          to="/atendimentos"
+          className="label-xs text-subtle transition-colors hover:text-foreground"
+        >
+          ← Atendimentos
+        </Link>
+        <div className="mt-6 grid border-y border-foreground py-8 md:grid-cols-[minmax(0,1.5fr)_minmax(220px,0.5fr)] md:items-end md:py-10">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <StatusTag status={atendimento.status} />
               <PrioridadeTag prioridade={atendimento.prioridade} />
               {atendimento.demo ? <span className="label-xs text-subtle">Demonstração</span> : null}
             </div>
-            <h1 className="mt-5 text-[2.35rem] leading-[0.9] font-semibold tracking-[-0.045em] md:text-[3.5rem]">{atendimento.nome}</h1>
-            <p className="mt-3 text-sm text-muted">{atendimento.nacionalidade} · {atendimento.idioma}</p>
+            <h1 className="mt-5 text-[2.35rem] leading-[0.9] font-semibold tracking-[-0.045em] md:text-[3.5rem]">
+              {atendimento.nome}
+            </h1>
+            <p className="mt-3 text-sm text-muted">
+              {atendimento.nacionalidade} / {atendimento.idioma}
+            </p>
           </div>
           <div className="mt-5 border-t border-line pt-4 md:mt-0 md:border-t-0 md:border-l md:pl-5">
             <p className="label-xs text-subtle">Registro</p>
@@ -69,11 +85,11 @@ function AtendimentoDetalhe() {
         </div>
       </div>
 
-      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
-        <div className="py-7 md:border-r md:pr-5">
+      <section className="grid border-b border-foreground md:grid-cols-[minmax(220px,0.42fr)_minmax(0,1.58fr)]">
+        <div className="py-8 md:border-r md:pr-8">
           <p className="label-xs text-subtle">Identificação</p>
         </div>
-        <dl className="md:pl-5">
+        <dl className="md:pl-8">
           <Row label="Situação documental" value={atendimento.situacaoDocumental} />
           <Row label="Contato" value={atendimento.contato || "Não informado"} />
           <Row label="Acolhimento" value={atendimento.acolhedor || "Não informado"} />
@@ -81,12 +97,14 @@ function AtendimentoDetalhe() {
         </dl>
       </section>
 
-      <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
-        <div className="py-7 md:border-r md:pr-5">
+      <section className="grid border-b border-foreground md:grid-cols-[minmax(220px,0.42fr)_minmax(0,1.58fr)]">
+        <div className="py-8 md:border-r md:pr-8">
           <p className="label-xs text-subtle">Demandas</p>
-          <p className="num-display mt-3 text-3xl">{String(atendimento.demandas.length).padStart(2, "0")}</p>
+          <p className="num-display mt-3 text-3xl">
+            {String(atendimento.demandas.length).padStart(2, "0")}
+          </p>
         </div>
-        <div className="md:pl-5">
+        <div className="md:pl-8">
           {atendimento.demandas.map((idDemanda) => {
             const demanda = DEMANDA_MAP[idDemanda];
             return (
@@ -99,7 +117,9 @@ function AtendimentoDetalhe() {
                     return (
                       <div key={campo.key} className="rule-lead flex items-baseline text-sm">
                         <dt className="shrink-0 text-subtle">{campo.label}</dt>
-                        <dd className="min-w-0 text-right leading-relaxed text-foreground">{resposta}</dd>
+                        <dd className="min-w-0 text-right leading-relaxed text-foreground">
+                          {resposta}
+                        </dd>
                       </div>
                     );
                   })}
@@ -111,19 +131,25 @@ function AtendimentoDetalhe() {
       </section>
 
       {atendimento.observacoes ? (
-        <section className="grid border-b border-foreground md:grid-cols-[0.42fr_1.58fr]">
-          <div className="py-7 md:border-r md:pr-5"><p className="label-xs text-subtle">Observações</p></div>
-          <p className="py-7 text-sm leading-relaxed text-foreground md:pl-5">{atendimento.observacoes}</p>
+        <section className="grid border-b border-foreground md:grid-cols-[minmax(220px,0.42fr)_minmax(0,1.58fr)]">
+          <div className="py-8 md:border-r md:pr-8">
+            <p className="label-xs text-subtle">Observações</p>
+          </div>
+          <p className="py-8 text-sm leading-relaxed text-foreground md:pl-8">
+            {atendimento.observacoes}
+          </p>
         </section>
       ) : null}
 
       <section className="border-b border-foreground py-7">
-        <div className="grid md:grid-cols-[0.42fr_1.58fr]">
-          <div className="pb-5 md:border-r md:pr-5 md:pb-0">
+        <div className="grid md:grid-cols-[minmax(220px,0.42fr)_minmax(0,1.58fr)]">
+          <div className="pb-5 md:border-r md:pr-8 md:pb-0">
             <p className="label-xs text-subtle">Andamento</p>
-            <p className="mt-3 text-xs leading-relaxed text-muted">Atualize o estado do atendimento neste dispositivo.</p>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Atualize o estado do atendimento neste dispositivo.
+            </p>
           </div>
-          <div className="grid grid-cols-3 gap-px border border-line bg-line md:ml-5">
+          <div className="grid grid-cols-3 gap-px border border-line bg-line md:ml-8">
             {STATUS_FLOW.map((status) => {
               const active = atendimento.status === status;
               return (
@@ -134,7 +160,9 @@ function AtendimentoDetalhe() {
                   aria-pressed={active}
                   className={cn(
                     "min-h-16 px-3 text-sm transition-colors duration-150",
-                    active ? "bg-foreground font-medium text-surface" : "bg-background text-muted hover:bg-accent-soft hover:text-foreground",
+                    active
+                      ? "bg-accent font-medium text-accent-foreground"
+                      : "bg-background text-muted hover:bg-accent-soft hover:text-accent",
                   )}
                 >
                   {STATUS_LABEL[status]}
